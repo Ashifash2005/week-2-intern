@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Image Slider</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(45deg, #1a1a1a, #2c3e50);
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            color: #fff;
+        }
+        .slider-container {
+            width: 90%;
+            max-width: 1200px;
+            height: 600px;
+            margin: 20px auto;
+            overflow: hidden;
+            position: relative;
+            border-radius: 20px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .slider {
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .slide img {
+            width: auto;
+            height: 100%;
+            max-width: 100%;
+            object-fit: cover;
+            border-radius: 20px;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .caption {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .slide.active .caption {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 16px;
+            border-radius: 50%;
+            transition: 0.3s;
+            font-size: 24px;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .prev { left: 20px; }
+        .next { right: 20px; }
+        .prev:hover, .next:hover { 
+            background: rgba(0, 0, 0, 0.9);
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .thumbnails {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .thumbnail {
+            width: 120px;
+            height: 90px;
+            margin: 10px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: 0.3s;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            object-fit: cover;
+            transform: scale(0.9);
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        .thumbnail:hover, .thumbnail.active {
+            opacity: 1;
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="slider-container">
+        <div class="slider">
+            <div class="slide active"><img src="johan-abraham-vuRADRB03yY-unsplash.jpg" alt="Image 1"><div class="caption">Nature's Beauty 1</div></div>
+            <div class="slide"><img src="camila-cordeiro-NOgn3fA94N4-unsplash.jpg" alt="Image 2"><div class="caption">Nature's Beauty 2</div></div>
+            <div class="slide"><img src="thales-botelho-de-sousa-7vVX7M2Ifls-unsplash.jpg" alt="Image 3"><div class="caption">Nature's Beauty 3</div></div>
+        </div>
+        <button class="prev">&#10094;</button>
+        <button class="next">&#10095;</button>
+    </div>
+
+    <div class="thumbnails">
+        <img src="johan-abraham-vuRADRB03yY-unsplash.jpg" class="thumbnail active" onclick="goToSlide(0)">
+        <img src="camila-cordeiro-NOgn3fA94N4-unsplash.jpg" class="thumbnail" onclick="goToSlide(1)">
+        <img src="thales-botelho-de-sousa-7vVX7M2Ifls-unsplash.jpg" class="thumbnail" onclick="goToSlide(2)">
+    </div>
+
+    <script>
+        let index = 0;
+        const slides = document.querySelectorAll(".slide");
+        const slider = document.querySelector(".slider");
+        const thumbnails = document.querySelectorAll(".thumbnail");
+
+        function showSlide(i) {
+            index = (i + slides.length) % slides.length;
+            slider.style.transform = `translateX(-${index * 100}%)`;
+
+            // Update active slide and captions
+            slides.forEach((slide, idx) => {
+                slide.classList.toggle("active", idx === index);
+            });
+
+            updateThumbnails();
+        }
+
+        function nextSlide() { showSlide(index + 1); }
+        function prevSlide() { showSlide(index - 1); }
+
+        document.querySelector(".next").addEventListener("click", nextSlide);
+        document.querySelector(".prev").addEventListener("click", prevSlide);
+
+        function goToSlide(i) { showSlide(i); }
+
+        function updateThumbnails() {
+            thumbnails.forEach((thumb, i) => {
+                thumb.classList.toggle("active", i === index);
+            });
+        }
+
+        function autoSlide() { nextSlide(); }
+        let slideInterval = setInterval(autoSlide, 4000);
+
+        document.querySelector(".slider-container").addEventListener("mouseover", () => clearInterval(slideInterval));
+        document.querySelector(".slider-container").addEventListener("mouseout", () => slideInterval = setInterval(autoSlide, 4000));
+
+        // Swipe functionality
+        let startX = 0;
+        document.querySelector(".slider-container").addEventListener("touchstart", (e) => startX = e.touches[0].clientX);
+        document.querySelector(".slider-container").addEventListener("touchend", (e) => {
+            let endX = e.changedTouches[0].clientX;
+            if (startX - endX > 50) nextSlide();
+            else if (endX - startX > 50) prevSlide();
+        });
+
+        updateThumbnails();
+    </script>
+
+</body>
+</html>
